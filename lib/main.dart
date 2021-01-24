@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_selector/screens/hook_screen.dart';
 
 void main() {
   runApp(
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ConsummerScreen(),
+      home: HookDemo(),
     );
   }
 }
@@ -119,6 +120,71 @@ class NumberProvider extends ChangeNotifier {
 
 class ConsummerScreen extends StatelessWidget {
   const ConsummerScreen({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    print('build home');
+    return Container(
+      child: Scaffold(
+        floatingActionButton: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FloatingActionButton(
+              heroTag: 'all',
+              onPressed: () {
+                context.read<NumberProvider>().add();
+              },
+              child: Text('all'),
+            ),
+            FloatingActionButton(
+              heroTag: '1',
+              onPressed: () {
+                context.read<NumberProvider>().addTo1();
+              },
+              child: Text('1'),
+            ),
+            FloatingActionButton(
+              heroTag: '2',
+              onPressed: () {
+                context.read<NumberProvider>().addTo2();
+              },
+              child: Text('2'),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: Center(
+            child: Container(
+              child: Consumer<NumberProvider>(
+                builder: (context, provider, child) {
+                  print('rebuild consumer');
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        color: Colors.red,
+                        padding: EdgeInsets.all(10),
+                        child: Text('${provider.number1}'),
+                      ),
+                      Container(
+                        color: Colors.green,
+                        padding: EdgeInsets.all(10),
+                        child: Text('${provider.number2}'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ContextScreen extends StatelessWidget {
+  const ContextScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
